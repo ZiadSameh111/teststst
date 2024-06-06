@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Auto-play Video</title>
+<title>Auto-play Video with Frame Capture</title>
 <style>
     body, html {
         margin: 0;
@@ -17,12 +17,43 @@
         height: 100%;
         object-fit: cover;
     }
+    #capture-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 10px 20px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
 </style>
 </head>
 <body>
-<video autoplay muted loop>
+<video id="video" autoplay muted loop>
   <source src="0606.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
+<button id="capture-btn">Capture Frame</button>
+<canvas id="canvas" style="display:none;"></canvas>
+<script>
+document.getElementById('capture-btn').addEventListener('click', function() {
+    var video = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    var dataURL = canvas.toDataURL('image/png');
+    var link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'frame.png';
+    link.click();
+});
+</script>
 </body>
 </html>
